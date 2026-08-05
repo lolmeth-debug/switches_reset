@@ -1,0 +1,19 @@
+!
+!
+enable
+conf
+!
+!
+!
+no ip http server
+!
+!
+interface vlan 1
+ no ip dhcp-client enable
+ no ip address 
+ ip address 10.90.90.94 255.255.255.0
+ no shutdown
+!
+end
+wr
+y
