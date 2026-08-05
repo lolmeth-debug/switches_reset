@@ -2837,7 +2837,7 @@ class ToolTip:
 ####################################################################################
 
 root =  Tk() #окно приложения
-root.title('Сброс и печать наклеек v1.08042')
+root.title('Сброс и печать наклеек v1.08043')
 root.geometry("600x760+400+200") # Слегка увеличили окно для более просторных отступов
 
 # --- НАЧАЛО БЛОКА ВИЗУАЛЬНОГО ОФОРМЛЕНИЯ ---
@@ -2985,7 +2985,7 @@ header_frame = ttk.Frame(left_container)
 header_frame.pack(anchor=N, fill=X)
 
 # Стилизованный заголовок (Label из классического Tk)
-mainlabel = Label(header_frame, text="Сброс коммутаторов и печать наклеек v1.08042",
+mainlabel = Label(header_frame, text="Сброс коммутаторов и печать наклеек v1.08043",
                   font=('Segoe UI', 11, 'bold'), bg=BG_COLOR, fg="#2980B9", pady=5)
 mainlabel.pack(anchor=N, side=LEFT)
 
