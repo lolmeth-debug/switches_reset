@@ -2841,6 +2841,59 @@ sv_ttk.set_theme("light")
 root.title('Сброс и печать наклеек v1.08043')
 root.geometry("600x760+400+200") # Слегка увеличили окно для более просторных отступов
 
+# --- НАЧАЛО БЛОКА ВИЗУАЛЬНОГО ОФОРМЛЕНИЯ ---
+style = ttk.Style()
+# Включаем плоскую тему (встроена в Tkinter), избавляемся от дизайна Windows 95
+if 'clam' in style.theme_names():
+    pass #style.theme_use('clam')
+
+# Принудительно делаем фон Combobox белым для всех состояний
+style.map('TCombobox', 
+    fieldbackground=[('readonly', 'white'), ('disabled', '#f0f0f0')],
+    selectbackground=[('readonly', '#0078d7')], # Цвет выделения текста (синий стандартный)
+    selectforeground=[('readonly', 'white')]
+)
+
+# Если нужно, чтобы и обычный белый фон поля ввода (не readonly) был белым:
+style.configure('TCombobox', fieldbackground='white', background='white')
+
+# Базовая цветовая палитра
+BG_COLOR = "#F4F6F9"      # Современный светло-серый фон
+TEXT_COLOR = "#2C3E50"    # Темно-сине-серый цвет текста для мягкого контраста
+ACCENT_COLOR = "#3498DB"  # Синий акцент для главной кнопки
+
+root.configure(bg=BG_COLOR)
+root.attributes("-alpha", 0.97) # Чуть меньшая прозрачность для читаемости
+
+# Глобальная настройка шрифтов и цветов для всех виджетов ttk
+app_font = ('Segoe UI', 9)
+style.configure('.', font=app_font)
+#style.configure('TFrame', background=BG_COLOR)
+#style.configure('TLabel', background=BG_COLOR, foreground=TEXT_COLOR)
+#style.configure('TCheckbutton', background=BG_COLOR, foreground=TEXT_COLOR)
+#style.configure('TRadiobutton', background=BG_COLOR, foreground=TEXT_COLOR)
+
+# Стили для обычных кнопок
+style.configure('TButton', font=app_font, padding=4)
+#style.map('TButton', background=[('active', '#E2E8F0')], foreground=[('disabled', '#A0AEC0')])
+
+style.configure("Left.TButton", anchor="w") 
+style.configure("Right.TButton", anchor="e") 
+
+# Акцентный стиль для главной кнопки сброса
+style.configure("Action.TButton", anchor="w", font=('Segoe UI', 10, 'bold'), padding=6)
+#style.map("Action.TButton", background=[('active', '#2980B9')])
+
+# Настройка красивого прогресс-бара
+style.configure("TProgressbar", thickness=20, background="#2ECC71", troughcolor="#E2E8F0", bordercolor=BG_COLOR)
+# --- КОНЕЦ БЛОКА ВИЗУАЛЬНОГО ОФОРМЛЕНИЯ ---
+
+# Решение 1: Для заголовка окна (кросс-платформенное)
+ICON_FILE_PHOTO = "network-switch.gif" 
+
+if os.path.exists(ICON_FILE_PHOTO):
+    try:
+        icon_photo = PhotoImage(file=ICON_FILE_PHOTO)
         # Устанавливает иконку в заголовке окна
         root.tk.call('wm', 'iconphoto', root._w, icon_photo) 
         print(f"Иконка '{ICON_FILE_PHOTO}' успешно загружена.")
