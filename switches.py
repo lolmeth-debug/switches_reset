@@ -2453,7 +2453,7 @@ def _mkt_select_iface(iface_list):
     tree = ttk.Treeview(dlg, columns=('name', 'mac'), show='headings')
     tree.heading('name', text='Интерфейс')
     tree.heading('mac', text='MAC-адрес')
-    tree.pack(fill='both', expand=True, padx=10, pady=10)
+    tree.pack(fill='both', expand=True, padx=10, pady=2)
 
     for name, mac in iface_list:
         tree.insert('', 'end', values=(name, mac))
@@ -2469,7 +2469,7 @@ def _mkt_select_iface(iface_list):
         dlg.destroy()
 
     btn_frame = ttk.Frame(dlg)
-    btn_frame.pack(pady=5)
+    btn_frame.pack(pady=2)
     ttk.Button(btn_frame, text="OK", command=on_ok).pack(side='left', padx=5)
     ttk.Button(btn_frame, text="Отмена", command=on_cancel).pack(side='left', padx=5)
 
@@ -2987,36 +2987,36 @@ header_frame.pack(anchor=N, fill=X)
 
 # Стилизованный заголовок (Label из классического Tk)
 mainlabel = Label(header_frame, text="Сброс коммутаторов и печать наклеек v1.08043", 
-                  font=('Segoe UI', 11, 'bold'), bg=BG_COLOR, fg="#2980B9", pady=5) 
+                  font=('Segoe UI', 11, 'bold'), bg=BG_COLOR, fg="#2980B9", pady=2) 
 mainlabel.pack(anchor=N, side=LEFT)
 
 btnDebugToggle = ttk.Button(header_frame, text="Отладка >>", command=toggle_debug_panel, style="Left.TButton")
-btnDebugToggle.pack(anchor=NE, side=RIGHT, padx=10, pady=5)
+btnDebugToggle.pack(anchor=NE, side=RIGHT, padx=10, pady=2)
 
 
 # Рамки теперь без черной окантовки, разделены отступами (воздухом)
-frame1 = ttk.Frame(left_container, padding=[10, 10, 10, 10])
-frame1.pack(anchor=NW, fill=BOTH, padx=10, pady=5)
+frame1 = ttk.Frame(left_container, padding=[5, 2, 5, 2])
+frame1.pack(anchor=NW, fill=BOTH, padx=10, pady=2)
 frame1.grid_columnconfigure(0, weight=1, uniform="equal") # Левая колонка строго равна правой
 frame1.grid_columnconfigure(1, weight=0)                  # Центр (кнопка и разделитель)
 frame1.grid_columnconfigure(2, weight=1, uniform="equal") # Правая колонка строго равна левой
 
-frame2 = ttk.Frame(left_container, padding=[10, 5, 10, 5])
-frame2.pack(anchor=W, fill=BOTH , padx=10, pady=5)
+frame2 = ttk.Frame(left_container, padding=[5, 2, 5, 2])
+frame2.pack(anchor=W, fill=BOTH , padx=10, pady=2)
 frame2.grid_columnconfigure(0, weight=1)
 frame2.grid_columnconfigure(1, weight=1)
 frame2.grid_columnconfigure(2, weight=1)
 frame2.grid_columnconfigure(3, weight=1)
 
-frame3 = ttk.Frame(left_container, padding=[10, 5, 10, 5])
-frame3.pack(anchor=W, fill=BOTH , padx=10, pady=5)
+frame3 = ttk.Frame(left_container, padding=[5, 2, 5, 2])
+frame3.pack(anchor=W, fill=BOTH , padx=10, pady=2)
 
-frame4 = ttk.Frame(left_container, padding=[10, 5, 10, 5])
-frame4.pack(anchor=W, fill=BOTH , padx=10, pady=5)
+frame4 = ttk.Frame(left_container, padding=[5, 2, 5, 2])
+frame4.pack(anchor=W, fill=BOTH , padx=10, pady=2)
 
 # --- Фрейм Mikrotik ---
 frame_mikrotik = ttk.LabelFrame(left_container, text="Mikrotik (подключение по API, порт 8728)", padding="10")
-frame_mikrotik.pack(fill='x', padx=10, pady=(5,5))
+frame_mikrotik.pack(fill='x', padx=10, pady=(2,2))
 
 mkt_ip_var = StringVar(value=mkt_ip_value)
 mkt_user_var = StringVar(value=mkt_user_value)
@@ -3030,10 +3030,10 @@ ttk.Label(frame_mikrotik, text="Пароль:").grid(row=0, column=4, sticky='w'
 ttk.Entry(frame_mikrotik, textvariable=mkt_pass_var, show="*", width=14).grid(row=0, column=5, sticky='w', padx=2, pady=2)
 
 btnPrintMikrotik = ttk.Button(frame_mikrotik, text="Печать наклейки Mikrotik", command=click_btnPrintMikrotik)
-btnPrintMikrotik.grid(row=1, column=0, columnspan=6, sticky='ew', padx=2, pady=5)
+btnPrintMikrotik.grid(row=1, column=0, columnspan=6, sticky='ew', padx=2, pady=2)
 
-frame5 = ttk.Frame(left_container, padding=[10, 10, 10, 10])
-frame5.pack(anchor=W, fill=BOTH, expand=True, padx=10, pady=(5, 15))
+frame5 = ttk.Frame(left_container, padding=[5, 2, 5, 2])
+frame5.pack(anchor=W, fill=BOTH, expand=True, padx=10, pady=(2, 5))
 
 #при нажатии любой кнопки вызываем функцию проверки
 root.bind('<KeyPress>', on_keypress)
@@ -3041,7 +3041,7 @@ root.bind('<KeyPress>', on_keypress)
 
 # Checkbutton для опции "Печатать наклейку после сброса" — под комбобоксом выбора принтера
 enabled_checkbutton = ttk.Checkbutton(frame1, text="Печатать наклейку после сброса", variable=is_print)
-enabled_checkbutton.grid(row=4, column=2, sticky="w", padx=5, pady=5)
+enabled_checkbutton.grid(row=4, column=2, sticky="w", padx=5, pady=2)
 ToolTip(enabled_checkbutton, "Наклейка с QR-кодом, датой и моделью")
 
 config_checkbutton = ttk.Checkbutton(frame2, text="Конфиг после сброса (Qtech/Snr)", variable=is_config)
@@ -3054,7 +3054,7 @@ chkAutoLoop.grid(row=1, column=2, columnspan=2, sticky="w", padx=15, pady=2)
 
 # Автоопределение скорости COM — под радиокнопками выбора скорости
 chkAutoSpeed = ttk.Checkbutton(frame1, text="Автоопределение скорости COM", variable=var_auto_speed)
-chkAutoSpeed.grid(row=4, column=0, sticky="w", padx=5, pady=5)
+chkAutoSpeed.grid(row=4, column=0, sticky="w", padx=5, pady=2)
 ToolTip(chkAutoSpeed, "При сбросе: если вывод порта нечитаем — порт переподключится\nна другой скорости (9600<->115200) автоматически")
 
 # Получение списка COM-портов
@@ -3066,7 +3066,7 @@ comspeed = IntVar(value=9600)
 
 # Combobox для COM-порта
 comport_cb = ttk.Combobox(frame1, textvariable=comport, values=comports, state="readonly", font=app_font)
-comport_cb.grid(row=0, column=0, columnspan=1, sticky="ew", padx=5, pady=5)
+comport_cb.grid(row=0, column=0, columnspan=1, sticky="ew", padx=5, pady=2)
 # Настройки скорости (левая колонка)
 speed_header = ttk.Label(frame1, text=f"Скорость: {comspeed.get()}", font=('Segoe UI', 9, 'bold'))
 speed_header.grid(row=1, column=0, sticky="w", padx=5, pady=(5,0))
@@ -3087,7 +3087,7 @@ printer_label = ttk.Label(frame1, text="Принтер:", font=('Segoe UI', 9, '
 printer_label.grid(row=1, column=2, columnspan=2, sticky="w", padx=5, pady=(5,0))
 
 printer_cb = ttk.Combobox(frame1, textvariable=selected_printer, values=printer_list, state="readonly", font=app_font)
-printer_cb.grid(row=2, column=2, columnspan=2, rowspan=2, sticky="ew", padx=5, pady=5)
+printer_cb.grid(row=2, column=2, columnspan=2, rowspan=2, sticky="ew", padx=5, pady=2)
 ToolTip(printer_cb, "Сохраняется при закрытии")
 
 # Добавляем вертикальный разделитель
@@ -3095,17 +3095,17 @@ separator = ttk.Separator(frame1, orient='vertical')
 separator.grid(row=1, column=1, rowspan=4, sticky="ns", padx=1, pady=1)
 
 btnCheckCom = ttk.Button(frame1, text="Перечитать порты", command=click_btnCheckCom, style="Left.TButton")
-btnCheckCom.grid(sticky="ew", row=0, column=1, padx=5, pady=5)
+btnCheckCom.grid(sticky="ew", row=0, column=1, padx=5, pady=2)
 
 btnSbros_text = StringVar(value="1. Сброс к заводским")
 # Применяем акцентный стиль "Action.TButton" для главной кнопки
 btnSbros = ttk.Button(frame2, textvariable=btnSbros_text, command=click_btnSbros, style="Action.TButton") 
-btnSbros.grid(sticky=EW, row=1, column=0, columnspan=2, padx=2, pady=5)
+btnSbros.grid(sticky=EW, row=1, column=0, columnspan=2, padx=2, pady=2)
 
 
 progress = IntVar(value=0) # прогрессбар
 progressbar =  ttk.Progressbar(frame2, orient="horizontal", variable=progress)
-progressbar.grid(sticky="ew", row=4, column=0, columnspan=4, padx=2, pady=10)
+progressbar.grid(sticky="ew", row=4, column=0, columnspan=4, padx=2, pady=2)
 # Текст отсчёта поверх прогресс-бара
 progressbar_label = ttk.Label(frame2, text="", font=('Segoe UI', 9)) 
 progressbar_label.grid(row=5, column=0, columnspan=4, pady=(0, 5))
@@ -3115,7 +3115,7 @@ btnPrintStickAuto.grid(sticky=NW, row=1, column=1, columnspan=3, padx=2, pady=2)
 ToolTip(btnPrintStickAuto, "Определит производителя уже подключенного (залогиненного) коммутатора и напечатает наклейку")
 
 lblUserpass = ttk.Label(frame3, text="Использовать эти данные, если не подойдут стандартные:", foreground="#7F8C8D")
-lblUserpass.grid(sticky=W, row=2, column=1, columnspan=4, pady=(10,5))
+lblUserpass.grid(sticky=W, row=2, column=1, columnspan=4, pady=(5,2))
 ToolTip(lblUserpass, "Сохраняется при закрытии")
 
 lblUser = ttk.Label(frame3, text="Login:")
@@ -3154,18 +3154,18 @@ entrySerial = ttk.Entry(frame4, name='edserial', font=app_font)
 entrySerial.grid(sticky=EW, row=2, column=3, columnspan=1, padx=2, pady=2)
 
 btnPrintStickData = ttk.Button(frame4, text="↑ Наклейка из данных", command=click_btnPrintStickData) 
-btnPrintStickData.grid(sticky=EW, row=3, column=1, padx=2, pady=(10,2))
+btnPrintStickData.grid(sticky=EW, row=3, column=1, padx=2, pady=(5,2))
 
 btnPrintRemont = ttk.Button(frame4, text="R. Наклейка Ремонт", command=click_btnPrintRemont)                                                                                     
-btnPrintRemont.grid(sticky=EW, row=3, column=2, columnspan=1, padx=5, pady=(10,2))
+btnPrintRemont.grid(sticky=EW, row=3, column=2, columnspan=1, padx=5, pady=(5,2))
 
 btnPrintSpisanie = ttk.Button(frame4, text="X. Наклейка Списание", command=click_btnPrintSpisanie)                                                                                     
-btnPrintSpisanie.grid(sticky=EW, row=3, column=3, columnspan=1, padx=5, pady=(10,2))
+btnPrintSpisanie.grid(sticky=EW, row=3, column=3, columnspan=1, padx=5, pady=(5,2))
 
 # Основной лог — светлый, "не терминальный" фон: просто показывает, какая процедура сейчас идёт
 stOutput = ScrolledText(frame5, width=10,  height=40, font=('Segoe UI', 10), 
                         bg='#EAF3FB', fg=TEXT_COLOR, insertbackground=TEXT_COLOR, 
-                        relief='flat', borderwidth=0, padx=10, pady=10) 
+                        relief='flat', borderwidth=0, padx=10, pady=2) 
 stOutput.pack(fill=BOTH, side=LEFT, expand=True)
 
 # --- Панель отладки (справа, появляется по кнопке "Отладка >>") ---
