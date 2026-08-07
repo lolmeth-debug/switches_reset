@@ -1820,7 +1820,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         if data_raw.get('timeout'):
             # Таймаут без переключения скорости — ничего не подключено за 120 секунд
             countdown_active = False
-            progressbar_label.config(text="Ничего не было подключено", fg="red")
+            progressbar_label.config(text="Ничего не было подключено", foreground="red")
             return False
         if not data_raw or 'buf' not in data_raw:
             print_log("Ошибка: timeout или нет данных" , color="red")
@@ -1834,7 +1834,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
             print_log("---- Обнаружен Dlink 3526/3200/3550/1210" , color="green", visible=False)
             what_print["DLINK"] = True
             countdown_active = False
-            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", fg="black")
+            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
             print_log("---- Запуск процедуры для Длинков", visible=False)
             progress.set(20)
             verdef_success = ver_defDlink(ser) #Запускаем сброс через переменную, чтобы потом проверить её статус
@@ -1852,7 +1852,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         elif any(x in buf for x in ["Boot version:", "Press Ctrl-B", "System self-test", "sending DISCOVER"]):
             what_print["QTECH"] = True
             countdown_active = False
-            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", fg="black")
+            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
             print_log("---- Запуск процедуры для QTECHов", visible=False)
             progress.set(20)
             verdef_success3 = ver_def_qtech(ser) #Запускаем сброс через переменную, чтобы потом проверить её статус
@@ -1870,7 +1870,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         elif any(x in buf for x in ["General initialization", "System is booting", "Bootrom version", "nos.img"]):
             what_print["SNR"] = True
             countdown_active = False
-            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", fg="black")
+            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
             print_log("---- Запуск процедуры для SNRов", visible=False)
             progress.set(20)
             verdef_success2 = ver_def_snr(ser) #Запускаем сброс через переменную, чтобы потом проверить её статус
@@ -1888,7 +1888,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         elif any(x in buf for x in ["is initializing"]):
             what_print["QTECH"] = True
             countdown_active = False
-            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", fg="black")
+            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
             print_log("---- Запуск процедуры для QTECHов", visible=False)
             progress.set(20)
             verdef_success3 = ver_def_qtech(ser) #Запускаем сброс через переменную, чтобы потом проверить её статус
@@ -1915,7 +1915,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
             if "Uncompressing" in buf:
                 print_log("---- Обнаружен Dlink 1210 (Uncompressing после переключения скорости)", color="green", visible=False)
                 what_print["DLINK"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", fg="black")
+                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
                 print_log("---- Запуск процедуры для Длинков", visible=False)
                 progress.set(20)
                 verdef_success = ver_defDlink(ser, buf)
@@ -1931,7 +1931,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
             if any(x in buf for x in ["Boot Procedure", "1210", "Power On Self Test", "MAC Address", "H/W Version"]):
                 print_log("---- Обнаружен Dlink 3526/3200/3550/1210", color="green", visible=False)
                 what_print["DLINK"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", fg="black")
+                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
                 print_log("---- Запуск процедуры для Длинков", visible=False)
                 progress.set(20)
                 verdef_success = ver_defDlink(ser, buf)
@@ -1946,7 +1946,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
 
             elif any(x in buf for x in ["Boot version:", "Press Ctrl-B", "System self-test", "sending DISCOVER"]):
                 what_print["QTECH"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", fg="black")
+                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
                 progress.set(20)
                 verdef_success3 = ver_def_qtech(ser)
                 if check_stop_flags():
@@ -1960,7 +1960,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
 
             elif any(x in buf for x in ["General initialization", "System is booting", "Bootrom version", "nos.img"]):
                 what_print["SNR"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", fg="black")
+                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
                 progress.set(20)
                 verdef_success2 = ver_def_snr(ser)
                 if check_stop_flags():
@@ -1974,7 +1974,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
 
             elif any(x in buf for x in ["is initializing"]):
                 what_print["QTECH"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", fg="black")
+                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
                 progress.set(20)
                 verdef_success3 = ver_def_qtech(ser)
                 if check_stop_flags():
@@ -2009,14 +2009,14 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
                         f"не был опознан за отведённое время.\n\n"
                         f"Перезагрузите коммутатор и подтвердите перезапуск сброса."
                     )
-                progressbar_label.config(text="НЕ ОПОЗНАН — перезагрузите коммутатор", fg="red")
+                progressbar_label.config(text="НЕ ОПОЗНАН — перезагрузите коммутатор", foreground="red")
                 restart = ask_yes_no_threadsafe("Автоопределение скорости", message)
                 if restart:
                     restart_reset_requested = True
                 return False
 
         else:
-            progressbar_label.config(text="Сброс/отменён или не удался, печать наклейки пропущена.", fg="red")
+            progressbar_label.config(text="Сброс/отменён или не удался, печать наклейки пропущена.", foreground="red")
             return False   
 
     except serial.SerialException as e:
@@ -2119,7 +2119,7 @@ def do_reset_whatswitch(is_print, is_config):#МНОГОПОТОЧНОСТЬ К�
         if not stop_flags["Sbros"]:  # Проверяем перед каждой долгой операцией
             reset_success = reset_whatswitch(ser)
             if not reset_success:
-                progressbar_label.config(text="Сброс/отменён или не удался, печать наклейки пропущена.", fg="red")
+                progressbar_label.config(text="Сброс/отменён или не удался, печать наклейки пропущена.", foreground="red")
                 return
        
         if is_print and not stop_flags["Sbros"]:  # Проверяем перед печатью
@@ -2170,7 +2170,7 @@ def do_reset_whatswitch(is_print, is_config):#МНОГОПОТОЧНОСТЬ К�
             enable_buttons()
         _run_on_main_thread(_finish_reset)
         if reset_success:
-            progressbar_label.config(text="СБРОШЕН К ЗАВОДСКИМ", fg="black")
+            progressbar_label.config(text="СБРОШЕН К ЗАВОДСКИМ", foreground="black")
             safe_progress_set(100)
             time.sleep(3)
             # Записываем итог в лог
@@ -2245,7 +2245,7 @@ def do_prn_stick_auto(is_print): #Автоопределение произво�
     for key in stop_flags:  # Иначе таймаут в предыдущей попытке навсегда блокирует все следующие чтения
         stop_flags[key] = False
     cancel_progress_animation()  # Прерываем "обратный" отсчёт прогресс-бара, оставшийся от прошлой операции
-    progressbar_label.config(text="", fg="black")
+    progressbar_label.config(text="", foreground="black")
     try:
         ser = serial.Serial(comport.get(), comspeed.get(), timeout=10)
         print_log("---- Определяем производителя подключенного коммутатора...", visible=False)
@@ -2600,7 +2600,7 @@ def click_btnPrintStickData(event=None): # кнопка печати из вве
 def click_btnCheckCom(): # Кнопка проверки ком-портов
     disable_buttons()
     clear_text()
-    progressbar_label.config(text="", fg="black")
+    progressbar_label.config(text="", foreground="black")
     btnPrintRemont.config(state='normal')
     btnPrintStickData.config(state='normal')
     btnPrintSpisanie.config(state='normal')
@@ -2687,7 +2687,7 @@ def print_log(message, update=False, color=None, visible=True): #Вывод со
 def clear_text():   #очистка поля вывода при нажатии кнопки
     def _do_clear():
         stOutput.delete("1.0", END)
-        progressbar_label.config(text="", fg="black")
+        progressbar_label.config(text="", foreground="black")
         # debugOutput больше не очищается — данные сохраняются между циклами
     _run_on_main_thread(_do_clear)
 
@@ -3107,9 +3107,8 @@ progress = IntVar(value=0) # прогрессбар
 progressbar =  ttk.Progressbar(frame2, orient="horizontal", variable=progress)
 progressbar.grid(sticky="ew", row=4, column=0, columnspan=4, padx=2, pady=10)
 # Текст отсчёта поверх прогресс-бара
-progressbar_label = Label(frame2, text="", font=('Segoe UI', 9), 
-                           borderwidth=0, highlightthickness=0, padx=0, pady=0, height=1)
-progressbar_label.place(relx=0.5, rely=0.5, anchor="center", in_=progressbar)
+progressbar_label = ttk.Label(frame2, text="", font=('Segoe UI', 9)) 
+progressbar_label.grid(row=5, column=0, columnspan=4, pady=(0, 5))
 
 btnPrintStickAuto = ttk.Button(frame3, text="Печать QR подключенного коммутатора", command=click_btnPrintStickAuto)
 btnPrintStickAuto.grid(sticky=NW, row=1, column=1, columnspan=3, padx=2, pady=2)
