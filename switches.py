@@ -2926,7 +2926,7 @@ var_auto_speed = tk.BooleanVar(value=auto_speed_value)
 
 # --- Основной контейнер и панель отладки рядом (справа, скрыта по умолчанию) ---
 # Фиксированная ширина 600px — без отладки, с отладкой 1300px
-MAIN_WIDTH = 600
+MAIN_WIDTH = 650
 DEBUG_DEFAULT_WIDTH = 700  # ширина окна отладки по умолчанию
 WINDOW_Y = 860
 
@@ -3041,7 +3041,7 @@ root.bind('<KeyPress>', on_keypress)
 
 # Checkbutton для опции "Печатать наклейку после сброса" — под комбобоксом выбора принтера
 enabled_checkbutton = ttk.Checkbutton(frame1, text="Печатать наклейку после сброса", variable=is_print)
-enabled_checkbutton.grid(row=4, column=2, sticky="w", padx=5, pady=2)
+enabled_checkbutton.grid(row=4, column=2, columnspan=2, sticky="w", padx=5, pady=2)
 ToolTip(enabled_checkbutton, "Наклейка с QR-кодом, датой и моделью")
 
 config_checkbutton = ttk.Checkbutton(frame2, text="Конфиг после сброса (Qtech/Snr)", variable=is_config)
