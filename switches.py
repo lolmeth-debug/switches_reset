@@ -3107,7 +3107,7 @@ progress = IntVar(value=0) # прогрессбар
 progressbar =  ttk.Progressbar(frame2, orient="horizontal", variable=progress)
 progressbar.grid(sticky="ew", row=4, column=0, columnspan=4, padx=2, pady=10)
 # Текст отсчёта поверх прогресс-бара
-progressbar_label = Label(frame2, text="", font=('Segoe UI', 9), bg="#E2E8F0", fg="#2C3E50",
+progressbar_label = Label(frame2, text="", font=('Segoe UI', 9), 
                            borderwidth=0, highlightthickness=0, padx=0, pady=0, height=1)
 progressbar_label.place(relx=0.5, rely=0.5, anchor="center", in_=progressbar)
 
