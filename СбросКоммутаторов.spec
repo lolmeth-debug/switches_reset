@@ -5,7 +5,7 @@ a = Analysis(
     ['switches.py'],
     pathex=[],
     binaries=[],
-    datas=[('config.txt', '.'), ('secret.key', '.'), ('arial.ttf', '.'), ('Bahnschrift.ttf', '.'), ('qr.png', '.'), ('broken.png', '.'), ('remont.png', '.'), ('spisanie.png', '.'), ('sticks', 'sticks')],
+    datas=[('config.txt', '.'), ('arial.ttf', '.'), ('Bahnschrift.ttf', '.'), ('qr.png', '.'), ('broken.png', '.'), ('remont.png', '.'), ('spisanie.png', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
