@@ -2659,21 +2659,18 @@ def countdown(seconds): #Обновляет прогресс-бар и текс�
 
 def print_log(message, update=False, color=None, visible=True): #Вывод сообщения в лог с возможностью обновления
     def _do_log():
-        if update:
-            # Удаляем последнее сообщение, если оно было обновляемым
-            stOutput.delete("end-2l", "end-1c")
-
-        start_pos = stOutput.index("end-1c")
-
         if visible:
-            stOutput.insert(END, message + "\n")
+            clean_msg = message.replace("---- ", "").replace("\n", "").strip()
+            fg_color = "#2C3E50"
+            if color == "green": fg_color = "#27ae60"
+            elif color == "red": fg_color = "#e74c3c"
+            elif color == "orange": fg_color = "#d35400"
+            elif color == "blue": fg_color = "#2980b9"
+            try:
+                progressbar_label.config(text=clean_msg, foreground=fg_color)
+            except NameError:
+                pass
 
-            # Если указан цвет - применяет его
-            if color:
-                stOutput.tag_add("temp_color", start_pos, "end-1c")
-                stOutput.tag_config("temp_color", foreground=color)
-
-            stOutput.yview(END)
 
         # Дублируем это же процедурное сообщение в окно отладки (если оно уже создано)
         try:
@@ -2686,7 +2683,6 @@ def print_log(message, update=False, color=None, visible=True): #Вывод со
 
 def clear_text():   #очистка поля вывода при нажатии кнопки
     def _do_clear():
-        stOutput.delete("1.0", END)
         progressbar_label.config(text="", foreground="black")
         # debugOutput больше не очищается — данные сохраняются между циклами
     _run_on_main_thread(_do_clear)
@@ -2839,8 +2835,8 @@ class ToolTip:
 root =  Tk() #окно приложения
 sv_ttk.set_theme("light")
 root.title('Сброс и печать наклеек v1.08043')
-root.geometry("750x760+400+200")
-root.minsize(750, 760) # Слегка увеличили окно для более просторных отступов
+root.geometry("750x450+400+200")
+root.minsize(750, 450) # Слегка увеличили окно для более просторных отступов
 
 # --- НАЧАЛО БЛОКА ВИЗУАЛЬНОГО ОФОРМЛЕНИЯ ---
 style = ttk.Style()
@@ -2929,7 +2925,7 @@ var_auto_speed = tk.BooleanVar(value=auto_speed_value)
 # Фиксированная ширина 600px — без отладки, с отладкой 1300px
 MAIN_WIDTH = 750
 DEBUG_DEFAULT_WIDTH = 700  # ширина окна отладки по умолчанию
-WINDOW_Y = 860
+WINDOW_Y = 450
 
 left_container = ttk.Frame(root, width=MAIN_WIDTH)
 left_container.pack(side=LEFT, fill=Y, expand=False)
@@ -3033,8 +3029,6 @@ ttk.Entry(frame_mikrotik, textvariable=mkt_pass_var, show="*", width=14).grid(ro
 btnPrintMikrotik = ttk.Button(frame_mikrotik, text="Печать наклейки Mikrotik", command=click_btnPrintMikrotik)
 btnPrintMikrotik.grid(row=1, column=0, columnspan=6, sticky='ew', padx=2, pady=2)
 
-frame5 = ttk.Frame(left_container, padding=[5, 2, 5, 2])
-frame5.pack(anchor=W, fill=BOTH, expand=True, padx=10, pady=(2, 5))
 
 #при нажатии любой кнопки вызываем функцию проверки
 root.bind('<KeyPress>', on_keypress)
@@ -3164,10 +3158,6 @@ btnPrintSpisanie = ttk.Button(frame4, text="X. Наклейка Списание
 btnPrintSpisanie.grid(sticky=EW, row=3, column=3, columnspan=1, padx=5, pady=(5,2))
 
 # Основной лог — светлый, "не терминальный" фон: просто показывает, какая процедура сейчас идёт
-stOutput = ScrolledText(frame5, width=10,  height=40, font=('Segoe UI', 10), 
-                        bg='#EAF3FB', fg=TEXT_COLOR, insertbackground=TEXT_COLOR, 
-                        relief='flat', borderwidth=0, padx=10, pady=2) 
-stOutput.pack(fill=BOTH, side=LEFT, expand=True)
 
 # --- Панель отладки (справа, появляется по кнопке "Отладка >>") ---
 debug_header = ttk.Label(frame_debug, text="Отладка: сырой обмен с COM-портом", font=('Segoe UI', 10, 'bold'))
