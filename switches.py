@@ -79,6 +79,10 @@ def safe_progress_set(value):
     """Потокобезопасная установка значения progressbar."""
     _run_on_main_thread(lambda: progress.set(value))
 
+def update_progressbar_label(text, foreground="black"):
+    """Потокобезопасная установка текста метки progressbar_label."""
+    _run_on_main_thread(lambda: progressbar_label.config(text=text, foreground=foreground))
+
 debug_raw_queue = queue.Queue()  # 'Сырые' данные для окна отладки: (kind, text), kind в {'output','input'}
 
 def _timestamp():
@@ -512,13 +516,13 @@ def check_stop_flags(): #Проверяет, есть ли активные фл
 
 def ver_def_snr(ser):  # процедура сброса SNR после ребута
     global what_print, countdown_active #full_buf
-    progress.set(21)
+    safe_progress_set(21)
     # Ожидаем появления Bootrom version
     #data_raw = read_until(["Bootrom version", "Bootrom version:"], ser, 90)
     #print_log("\n---- Видим Bootrom version")
 
     check_timeout()
-    progress.set(30)
+    safe_progress_set(30)
 
     if check_stop_flags():
         countdown_active = False
@@ -530,7 +534,7 @@ def ver_def_snr(ser):  # процедура сброса SNR после ребу
     print("buf1 ", data_raw['buf'])
     print_log("---- Первая загрузка до Testing RAM есть", visible=False)
     check_timeout()
-    progress.set(35)
+    safe_progress_set(35)
 
     if check_stop_flags():
         countdown_active = False
@@ -552,7 +556,7 @@ def ver_def_snr(ser):  # процедура сброса SNR после ребу
         data_raw = read_until(["[Boot]"], ser, 0.1)
         if "[Boot]" in data_raw["buf"]:
             print_log("---- Обнаружено BOOT меню!", visible=False)
-            progress.set(40)
+            safe_progress_set(40)
             boot_menu_detected = True
             send(" \r\n", ser)
             time.sleep(1)
@@ -580,26 +584,26 @@ def ver_def_snr(ser):  # процедура сброса SNR после ребу
     data_raw = read_until([":"], ser, 2)
     check_timeout()
     print_log("---- Посылаем сброс из BOOT", visible=False)
-    progress.set(50)
+    safe_progress_set(50)
 
     send("run\r\n", ser)
     data_raw = read_until([":"], ser, 2)
     check_timeout()
     print_log("---- Применяем (run) из BOOT", visible=False)
-    progress.set(55)
+    safe_progress_set(55)
 
     print_log("\n---- ПЕРВАЯ ЧАСТЬ СБРОСА ЗАВЕРШЕНА", visible=False)
 
     data_raw = read_until(["initialization", "Loading flash"], ser, 120)
     print_log("---- Загружается, ждём", visible=False)
-    progress.set(65)
+    safe_progress_set(65)
 
     data_raw = read_until("Username:", ser, 200)
     send("admin\n", ser)
     data_raw = read_until("Password:", ser, 5)
     send("admin\n", ser)
     check_timeout()
-    progress.set(75)
+    safe_progress_set(75)
 
     send("\n", ser)
     send("\n", ser)
@@ -639,7 +643,7 @@ def ver_def_snr(ser):  # процедура сброса SNR после ребу
                 switch_data['mac'] = m.group(1).upper()
                 break
     print_log("---- Прочитали sho ver до uptime", visible=False)
-    progress.set(80)
+    safe_progress_set(80)
 
     print_log("\n---- ВЕСЬ СБРОС ЗАВЕРШЕН", visible=False)
     time.sleep(1)
@@ -651,7 +655,7 @@ def ver_def_qtech( ser ):#процедура сброса QTECH после ре�
   data_raw = read_until( "Press Ctrl-B", ser, 60 )
   print_log("\n---- Приглашение в BOOT меню от QTECH", visible=False)
   check_timeout()
-  progress.set(30)
+  safe_progress_set(30)
 
   max_attempts = 10  # Максимальное количество попыток
   boot_menu_detected = False  # Флаг, что меню загрузки обнаружено
@@ -663,7 +667,7 @@ def ver_def_qtech( ser ):#процедура сброса QTECH после ре�
     data_raw = read_until(["Boot#"], ser, 0.1)
     if "Boot#" in data_raw["buf"]:
         print_log("---- Обнаружено Boot#", visible=False)
-        progress.set(40)
+        safe_progress_set(40)
         boot_menu_detected = True
         send(" \r\n", ser)
         time.sleep(1)
@@ -677,14 +681,14 @@ def ver_def_qtech( ser ):#процедура сброса QTECH после ре�
   print_log("---- Посылаем команду обнуления", visible=False)
   data_raw = read_until( ["Boot#"], ser, 2 )
   check_timeout()
-  progress.set(50)
+  safe_progress_set(50)
 
   send("run\r\n", ser )
   print_log("---- Посылаем команду запуска", visible=False)
   data_raw = read_until( ["Loading flash"], ser, 2 )
   print_log("---- Пошла загрузка flash", visible=False)
   check_timeout()
-  progress.set(60)
+  safe_progress_set(60)
 
   print_log("\n---- ПЕРВАЯ ЧАСТЬ СБРОСА ЗАВЕРШЕНА", visible=False )
 
@@ -713,16 +717,16 @@ def ver_def_qtech( ser ):#процедура сброса QTECH после ре�
       if 'MAC' in line:
           m = re.search(r'([0-9A-Fa-f]{2}[:-][0-9A-Fa-f]{2}[:-][0-9A-Fa-f]{2}[:-][0-9A-Fa-f]{2}[:-][0-9A-Fa-f]{2}[:-][0-9A-Fa-f]{2})', line)
           if m:
-              switch_data['mac'] = r.group(1).upper()
+              switch_data['mac'] = m.group(1).upper()
               break
-  progress.set(70)
+  safe_progress_set(70)
   send( "\r\n", ser )
   data_raw = read_until( ">", ser, 5 )
   send( "enable\n", ser )
   data_raw = read_until( "#", ser, 5 )
   print_log("---- Зашли внутрь и видим #", visible=False)
   check_timeout()
-  progress.set(80)
+  safe_progress_set(80)
 
   print_log("\n---- ВЕСЬ СБРОС ЗАВЕРШЕН", visible=False)
   time.sleep(1)
@@ -810,7 +814,7 @@ def ver_def1210MEA1( ser, full_buf ):#процедура сброса 1210ME п�
         full_buf += data_raw['buf'] # Наполняем наш буфер в цикле
         if "Password Recovery Mode" in data_raw['buf']:
             print_log("---- Обнаружено BOOT меню!", visible=False)
-            progress.set(40)
+            safe_progress_set(40)
             boot_menu_detected = True
             send(" \r\n", ser)
             time.sleep(1)
@@ -849,13 +853,13 @@ def ver_def1210MEA1( ser, full_buf ):#процедура сброса 1210ME п�
     if ">" in data_raw['buf']:
         print_log("---- Уже в рекавери", visible=False)
     check_timeout()
-    progress.set(50)
+    safe_progress_set(50)
 
     send(" \r\n", ser )
     data_raw = read_until( [">"], ser, 1 )
     check_timeout()
     print_log("---- Начинаем сброс из recovery", visible=False)
-    progress.set(55)
+    safe_progress_set(55)
 
     send("reset config\n", ser )
     data_raw = read_until( ["(y/n)"], ser, 3 )
@@ -866,7 +870,7 @@ def ver_def1210MEA1( ser, full_buf ):#процедура сброса 1210ME п�
     data_raw = read_until( ["Loading Runtime Image"], ser, 60 )
     check_timeout()
     print_log("---- Перезагрузился, ждём", visible=False)
-    progress.set(60)
+    safe_progress_set(60)
 
     data_raw = read_until( ["UserName:","Username:"], ser, 120 )
     check_timeout()
@@ -878,7 +882,7 @@ def ver_def1210MEA1( ser, full_buf ):#процедура сброса 1210ME п�
 
     data_raw = read_until( "#", ser )
     check_timeout()
-    progress.set(80)
+    safe_progress_set(80)
     print_log("---- Сброс 1210 A1 завершен", visible=False)
 
     return True
@@ -889,7 +893,7 @@ def ver_def3526(ser, image_version): #Конкретно под 3526
         print("buf1 ",data_raw['buf'])
         print_log("---- Первая загрузка до 100% есть", visible=False)
         check_timeout()
-        progress.set(35)
+        safe_progress_set(35)
 
         max_attempts = 40  # Максимальное количество попыток
         boot_menu_detected = False  # Флаг, что меню загрузки обнаружено
@@ -901,7 +905,7 @@ def ver_def3526(ser, image_version): #Конкретно под 3526
             data_raw = read_until(["Factory Default Enable"], ser, 0.1)
             if "Factory Default Enable" in data_raw["buf"]:
                 print_log("---- Обнаружено Factory Default!", visible=False)
-                progress.set(40)
+                safe_progress_set(40)
                 boot_menu_detected = True
                 send(" \r\n", ser)
                 time.sleep(1)
@@ -913,7 +917,7 @@ def ver_def3526(ser, image_version): #Конкретно под 3526
         data_raw = read_until( ["any key"], ser, 150 )
         print_log("---- Обнаружено  any key", visible=False) #Тут для 3526 начинаем сброс из основного меню
         print_log("---- Коммутатор сбросил пароли, продолжаем из меню", visible=False)
-        progress.set(50)
+        safe_progress_set(50)
         send( "\n", ser )
 
         data_raw = read_until( "username:", ser, 5 )
@@ -924,19 +928,19 @@ def ver_def3526(ser, image_version): #Конкретно под 3526
         send( "\n", ser )
         data_raw = read_until( "#", ser )
         check_timeout()
-        progress.set(60)
+        safe_progress_set(60)
 
         send( "reset system force_agree\n", ser )
         print_log("---- Послали  команду сброса системы", visible=False)
 
         data_raw = read_until( ["Power On Self Test"], ser, 150 )
         print_log("---- Перезагрузился, тестирует себя", visible=False)
-        progress.set(70)
+        safe_progress_set(70)
 
         data_raw = read_until( "Press any key to login", ser, 150 )
         check_timeout()
         print_log("---- Приглашение нажать кнопочку", visible=False)
-        progress.set(75)
+        safe_progress_set(75)
         send( "\n", ser )
 
         data_raw = read_until( "username:", ser )
@@ -1000,7 +1004,7 @@ def ver_def3526(ser, image_version): #Конкретно под 3526
 
         if not power_status_found:
              print_log("---- ВНИМАНИЕ: Строка 'Power Status' не найдена в выводе 'sh sw'!", visible=False)
-        progress.set(80)
+        safe_progress_set(80)
         print_log("---- Сброс 3526 завершен", visible=False)
         return True
 
@@ -1009,7 +1013,7 @@ def ver_def3200(ser, image_version): #Конкретно под 3200
         print("buf1 ",data_raw['buf'])
         print_log("---- Первая загрузка до 100% есть", visible=False)
         check_timeout()
-        progress.set(35)
+        safe_progress_set(35)
 
         max_attempts = 40  # Максимальное количество попыток
         boot_menu_detected = False  # Флаг, что меню загрузки обнаружено
@@ -1021,7 +1025,7 @@ def ver_def3200(ser, image_version): #Конкретно под 3200
             data_raw = read_until(["Password Recovery Mode"], ser, 0.1)
             if "Password Recovery Mode" in data_raw["buf"]:
                 print_log("---- Обнаружено Recovery Mode меню!", visible=False)
-                progress.set(40)
+                safe_progress_set(40)
                 boot_menu_detected = True
                 send("\r\n", ser)
                 time.sleep(0.5)
@@ -1042,13 +1046,13 @@ def ver_def3200(ser, image_version): #Конкретно под 3200
             time.sleep(0.5)
             send("\r\n", ser)
         check_timeout()
-        progress.set(50)
+        safe_progress_set(50)
 
         send(" \r\n", ser )
         data_raw = read_until( [">"], ser, 2 )
         check_timeout()
         print_log("---- Начинаем сброс из recovery", visible=False)
-        progress.set(55)
+        safe_progress_set(55)
 
         send("reset config\r\n", ser )
         data_raw = read_until( ["(y/n)"], ser, 3 )
@@ -1058,7 +1062,7 @@ def ver_def3200(ser, image_version): #Конкретно под 3200
 
         data_raw = read_until( [">"], ser, 45 )
         check_timeout()
-        progress.set(60)
+        safe_progress_set(60)
 
         send("reset account\r\n", ser )
         data_raw = read_until( [">", "(y/n)"], ser, 5 )
@@ -1068,7 +1072,7 @@ def ver_def3200(ser, image_version): #Конкретно под 3200
         elif ">" in data_raw['buf']:
             send(" \r\n", ser )
         check_timeout()
-        progress.set(65)
+        safe_progress_set(65)
 
         data_raw = read_until( [">"], ser, 3 )
         check_timeout()
@@ -1081,12 +1085,12 @@ def ver_def3200(ser, image_version): #Конкретно под 3200
         data_raw = read_until( ["(y/n)"], ser, 3 )
         check_timeout()
         send("y", ser )
-        progress.set(70)
+        safe_progress_set(70)
         print_log("---- Сбросили и ожидаем перезагрузки", visible=False)
 
         data_raw = read_until( ["Power On Self Test"], ser, 120 )
         print_log("---- Перезагрузился, тестирует себя", visible=False)
-        progress.set(75)
+        safe_progress_set(75)
 
         data_raw = read_until( "any key to login", ser, 150 )
         check_timeout()
@@ -1106,7 +1110,7 @@ def ver_def3200(ser, image_version): #Конкретно под 3200
         data_raw = read_until( "#", ser )
 
         check_timeout()
-        progress.set(80)
+        safe_progress_set(80)
 
         # Проверяем прошивку и Power Status уже после сброса — из show switch
         send( "disable clipaging\n", ser )
@@ -1156,7 +1160,7 @@ def ver_def3200(ser, image_version): #Конкретно под 3200
 
 def ver_defDlink( ser, pre_buf=None ):#общая процедура сброса Dlink после ребута
     global what_print, countdown_active #full_buf
-    progress.set(21)
+    safe_progress_set(21)
 
     if pre_buf:
         # Данные уже прочитаны (например, после автопереключения скорости) —
@@ -1175,7 +1179,7 @@ def ver_defDlink( ser, pre_buf=None ):#общая процедура сброс�
         data_raw = read_until(["100%"], ser, 60)
         #buf = data_raw['buf']
         try:
-            progress.set(30)
+            safe_progress_set(30)
             print_log("---- Запуск процедуры для D-Link 1210", visible=False)
             full_buf = "" # Инициализируем переменную для полного буфера
             full_buf += data_raw['buf'] #Начинаем наполнять буфером
@@ -1206,11 +1210,11 @@ def ver_defDlink( ser, pre_buf=None ):#общая процедура сброс�
         print_log(f"\nH/W Version   : {hw_version}", visible=False)
         print_log(f"Runtime image : {image_version}\n", visible=False)
         # Пытаемся понять какой D-link пришел
-        progress.set(25)
+        safe_progress_set(25)
 
         if hw_version in ["A1", "B1", "C1"]:  # Точное сравнение
             countdown_active = False
-            progress.set(30)
+            safe_progress_set(30)
             if "C1" in hw_version:
                 print_log("---- Ревизия C1", visible=False)
             elif "A1" in hw_version or "B1" in hw_version:
@@ -1224,7 +1228,7 @@ def ver_defDlink( ser, pre_buf=None ):#общая процедура сброс�
 
         elif hw_version in ["0A3G", "3A1", "A4", "A4G", "1A1"]:  # Точное сравнение
             countdown_active = False
-            progress.set(30)
+            safe_progress_set(30)
             # Версию прошивки проверяем ПОСЛЕ сброса в ver_def3526 (из show switch)
             print_log("---- Запуск процедуры для Длинков 3526", visible=False)
             def_sucsess = ver_def3526(ser, image_version)
@@ -1369,21 +1373,21 @@ def check_login_dlink(ser, username="", userpass=""): #Процедура про
    print_log( "---- Проверка залогиненности Dlink", visible=False)
    send( "\n", ser )
    time.sleep(0.1)
-   progress.set(20)
+   safe_progress_set(20)
    send( "\n", ser )
    time.sleep(0.1)
-   progress.set(30)
+   safe_progress_set(30)
    send( "\n", ser )
    time.sleep(0.1)
-   progress.set(40)
+   safe_progress_set(40)
    send( "\n", ser )
    time.sleep(0.1)
-   progress.set(50)
+   safe_progress_set(50)
    data_raw = read_until(["#", "sername:", "assword:"], ser, 2)
 
    if "#" in data_raw['buf']:
        print_log("---- Залогинены сразу", visible=False)
-       progress.set(85)
+       safe_progress_set(85)
        is_timeout = False
        return True
    elif "sername:" in data_raw['buf']:
@@ -1395,11 +1399,11 @@ def check_login_dlink(ser, username="", userpass=""): #Процедура про
             print_log("---- sername в ответе", visible=False)
             send( f"{username}\n", ser )
             print_log("---- Послали введенный юзернейм (1)", visible=False)
-            progress.set(70)
+            safe_progress_set(70)
             data_raw = read_until(["assword"], ser, 1)
             send( f"{userpass}\n", ser )
             print_log("---- Послали введенный пароль (1)", visible=False)
-            progress.set(80)
+            safe_progress_set(80)
             data_raw = read_until(["#"], ser, 1)
             is_timeout = False
             if "#" in data_raw['buf']:
@@ -1412,17 +1416,17 @@ def check_login_dlink(ser, username="", userpass=""): #Процедура про
             return False
        else:
             print_log("---- password в ответе", visible=False)
-            progress.set(60)
+            safe_progress_set(60)
             send( "\n", ser )
             print_log("---- Послали enter чтобы перескочить на username", visible=False)
             data_raw = read_until(["sername"], ser, 1)
             send( f"{username}\n", ser )
             print_log("---- Послали введенный юзернейм (2) ", visible=False)
-            progress.set(70)
+            safe_progress_set(70)
             data_raw = read_until(["assword"], ser, 1)
             send( f"{userpass}\n", ser )
             print_log("---- Послали введенный пароль (2)", visible=False)
-            progress.set(80)
+            safe_progress_set(80)
             data_raw = read_until(["#"], ser, 1)
             is_timeout = False
             if "#" in data_raw['buf']:
@@ -1673,7 +1677,7 @@ def prn_stick_snr(ser): #Печать наклейки SNR. Прогресс д�
         print_log("Принтер не выбран!", visible=False)
         return
     prn.printfile(fn, printer_name=curprn)  # Передаём имя принтера
-    progress.set(90)
+    safe_progress_set(90)
     #print("\n--------!!!Реальная Печать закомментирована!!-----------")
     # Заполняем данные коммутатора для логирования
     switch_data['vendor'] = 'SNR'
@@ -1707,7 +1711,7 @@ def prn_stick_qtech(ser): #Печать наклейки QTECH. Прогресс
        print_log("Принтер не выбран!", visible=False)
        return
    prn.printfile(fn, printer_name=curprn)  # Передаём имя принтера
-   progress.set(90)
+   safe_progress_set(90)
    print_log("---- Печать наклейки QTECH завершена", visible=False)
    #print_log("\n--------!!!Реальная Печать QTECH закомментирована!!")
    # Заполняем данные коммутатора для логирования
@@ -1765,7 +1769,7 @@ def prn_stick_dlink(ser): #Печать наклейки Dlink. Прогресс
        print_log("Принтер не выбран!", visible=False)
        return
   prn.printfile(fn, printer_name=curprn)  # Передаём имя принтера
-  progress.set(90)
+  safe_progress_set(90)
   print_log("---- Печать наклейки dlink завершена", visible=False)
   #print_log("\n--------!!!Реальная Печать закомментирована!!-----------")
 
@@ -1785,7 +1789,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         if check_stop_flags():
                 #countdown_active = False
                 return False
-        progress.set(10)
+        safe_progress_set(10)
         if check_stop_flags():
                 #countdown_active = False
                 return False
@@ -1820,13 +1824,13 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         if data_raw.get('timeout'):
             # Таймаут без переключения скорости — ничего не подключено за 120 секунд
             countdown_active = False
-            progressbar_label.config(text="Ничего не было подключено", foreground="red")
+            update_progressbar_label("Ничего не было подключено", "red")
             return False
         if not data_raw or 'buf' not in data_raw:
             print_log("Ошибка: timeout или нет данных" , color="red")
             countdown_active = False
             return False
-        progress.set(15)
+        safe_progress_set(15)
 
         buf = data_raw['buf']
         #if "DGS-1210" in buf:
@@ -1834,9 +1838,9 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
             print_log("---- Обнаружен Dlink 3526/3200/3550/1210" , color="green", visible=False)
             what_print["DLINK"] = True
             countdown_active = False
-            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
+            update_progressbar_label("ВЫПОЛНЯЮ СБРОС", "black")
             print_log("---- Запуск процедуры для Длинков", visible=False)
-            progress.set(20)
+            safe_progress_set(20)
             verdef_success = ver_defDlink(ser) #Запускаем сброс через переменную, чтобы потом проверить её статус
             if check_stop_flags():
                 countdown_active = False
@@ -1852,9 +1856,9 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         elif any(x in buf for x in ["Boot version:", "Press Ctrl-B", "System self-test", "sending DISCOVER"]):
             what_print["QTECH"] = True
             countdown_active = False
-            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
+            update_progressbar_label("ВЫПОЛНЯЮ СБРОС", "black")
             print_log("---- Запуск процедуры для QTECHов", visible=False)
-            progress.set(20)
+            safe_progress_set(20)
             verdef_success3 = ver_def_qtech(ser) #Запускаем сброс через переменную, чтобы потом проверить её статус
             if check_stop_flags():
                 countdown_active = False
@@ -1870,9 +1874,9 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         elif any(x in buf for x in ["General initialization", "System is booting", "Bootrom version", "nos.img"]):
             what_print["SNR"] = True
             countdown_active = False
-            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
+            update_progressbar_label("ВЫПОЛНЯЮ СБРОС", "black")
             print_log("---- Запуск процедуры для SNRов", visible=False)
-            progress.set(20)
+            safe_progress_set(20)
             verdef_success2 = ver_def_snr(ser) #Запускаем сброс через переменную, чтобы потом проверить её статус
             if check_stop_flags():
                 countdown_active = False
@@ -1888,9 +1892,9 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         elif any(x in buf for x in ["is initializing"]):
             what_print["QTECH"] = True
             countdown_active = False
-            progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
+            update_progressbar_label("ВЫПОЛНЯЮ СБРОС", "black")
             print_log("---- Запуск процедуры для QTECHов", visible=False)
-            progress.set(20)
+            safe_progress_set(20)
             verdef_success3 = ver_def_qtech(ser) #Запускаем сброс через переменную, чтобы потом проверить её статус
             if check_stop_flags():
                 countdown_active = False
@@ -1915,9 +1919,9 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
             if "Uncompressing" in buf:
                 print_log("---- Обнаружен Dlink 1210 (Uncompressing после переключения скорости)", color="green", visible=False)
                 what_print["DLINK"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
+                update_progressbar_label("ВЫПОЛНЯЮ СБРОС", "black")
                 print_log("---- Запуск процедуры для Длинков", visible=False)
-                progress.set(20)
+                safe_progress_set(20)
                 verdef_success = ver_defDlink(ser, buf)
                 if check_stop_flags():
                     return False
@@ -1931,9 +1935,9 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
             if any(x in buf for x in ["Boot Procedure", "1210", "Power On Self Test", "MAC Address", "H/W Version"]):
                 print_log("---- Обнаружен Dlink 3526/3200/3550/1210", color="green", visible=False)
                 what_print["DLINK"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
+                update_progressbar_label("ВЫПОЛНЯЮ СБРОС", "black")
                 print_log("---- Запуск процедуры для Длинков", visible=False)
-                progress.set(20)
+                safe_progress_set(20)
                 verdef_success = ver_defDlink(ser, buf)
                 if check_stop_flags():
                     return False
@@ -1946,8 +1950,8 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
 
             elif any(x in buf for x in ["Boot version:", "Press Ctrl-B", "System self-test", "sending DISCOVER"]):
                 what_print["QTECH"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
-                progress.set(20)
+                update_progressbar_label("ВЫПОЛНЯЮ СБРОС", "black")
+                safe_progress_set(20)
                 verdef_success3 = ver_def_qtech(ser)
                 if check_stop_flags():
                     return False
@@ -1960,8 +1964,8 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
 
             elif any(x in buf for x in ["General initialization", "System is booting", "Bootrom version", "nos.img"]):
                 what_print["SNR"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
-                progress.set(20)
+                update_progressbar_label("ВЫПОЛНЯЮ СБРОС", "black")
+                safe_progress_set(20)
                 verdef_success2 = ver_def_snr(ser)
                 if check_stop_flags():
                     return False
@@ -1974,8 +1978,8 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
 
             elif any(x in buf for x in ["is initializing"]):
                 what_print["QTECH"] = True
-                progressbar_label.config(text="ВЫПОЛНЯЮ СБРОС", foreground="black")
-                progress.set(20)
+                update_progressbar_label("ВЫПОЛНЯЮ СБРОС", "black")
+                safe_progress_set(20)
                 verdef_success3 = ver_def_qtech(ser)
                 if check_stop_flags():
                     return False
@@ -2009,14 +2013,14 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
                         f"не был опознан за отведённое время.\n\n"
                         f"Перезагрузите коммутатор и подтвердите перезапуск сброса."
                     )
-                progressbar_label.config(text="НЕ ОПОЗНАН — перезагрузите коммутатор", foreground="red")
+                update_progressbar_label("НЕ ОПОЗНАН — перезагрузите коммутатор", "red")
                 restart = ask_yes_no_threadsafe("Автоопределение скорости", message)
                 if restart:
                     restart_reset_requested = True
                 return False
 
         else:
-            progressbar_label.config(text="Сброс/отменён или не удался, печать наклейки пропущена.", foreground="red")
+            update_progressbar_label("Сброс/отменён или не удался, печать наклейки пропущена.", "red")
             return False
 
     except serial.SerialException as e:
@@ -2032,7 +2036,7 @@ def reset_whatswitch(ser):#приглашение к перезапуску не
         _run_on_main_thread(lambda: messagebox.showerror("Ошибка", f"Ошибка: {e}"))
         return False
     finally:
-        progress.set(80)
+        safe_progress_set(80)
 
 
 def ensure_serial_connection(ser): # функция для проверки и восстановления соединения
@@ -2119,7 +2123,7 @@ def do_reset_whatswitch(is_print, is_config):#МНОГОПОТОЧНОСТЬ К�
         if not stop_flags["Sbros"]:  # Проверяем перед каждой долгой операцией
             reset_success = reset_whatswitch(ser)
             if not reset_success:
-                progressbar_label.config(text="Сброс/отменён или не удался, печать наклейки пропущена.", foreground="red")
+                update_progressbar_label("Сброс/отменён или не удался, печать наклейки пропущена.", "red")
                 return
 
         if is_print and not stop_flags["Sbros"]:  # Проверяем перед печатью
@@ -2170,7 +2174,7 @@ def do_reset_whatswitch(is_print, is_config):#МНОГОПОТОЧНОСТЬ К�
             enable_buttons()
         _run_on_main_thread(_finish_reset)
         if reset_success:
-            progressbar_label.config(text="СБРОШЕН К ЗАВОДСКИМ", foreground="black")
+            update_progressbar_label("СБРОШЕН К ЗАВОДСКИМ", "black")
             safe_progress_set(100)
             time.sleep(3)
             # Записываем итог в лог
@@ -2245,7 +2249,7 @@ def do_prn_stick_auto(is_print): #Автоопределение произво�
     for key in stop_flags:  # Иначе таймаут в предыдущей попытке навсегда блокирует все следующие чтения
         stop_flags[key] = False
     cancel_progress_animation()  # Прерываем "обратный" отсчёт прогресс-бара, оставшийся от прошлой операции
-    progressbar_label.config(text="", foreground="black")
+    update_progressbar_label("", "black")
     try:
         ser = serial.Serial(comport.get(), comspeed.get(), timeout=10)
         print_log("---- Определяем производителя подключенного коммутатора...", visible=False)
@@ -2600,7 +2604,7 @@ def click_btnPrintStickData(event=None): # кнопка печати из вве
 def click_btnCheckCom(): # Кнопка проверки ком-портов
     disable_buttons()
     clear_text()
-    progressbar_label.config(text="", foreground="black")
+    update_progressbar_label("", "black")
     btnPrintRemont.config(state='normal')
     btnPrintStickData.config(state='normal')
     btnPrintSpisanie.config(state='normal')
@@ -2610,70 +2614,71 @@ def click_btnCheckCom(): # Кнопка проверки ком-портов
 
 
 def disable_buttons():
-    # btnCheckCom.config(state='disabled') # Её блочим отдельно только при вызове кнопки Сброс
-    btnSbros.config(state='disabled')
-    btnPrintRemont.config(state='disabled')
-    btnPrintSpisanie.config(state='disabled')
-    btnPrintStickData.config(state='disabled')
-    btnPrintStickAuto.config(state='disabled')
-    btnPrintMikrotik.config(state='disabled')
-    enabled_checkbutton.config(state='disabled')
-    config_checkbutton.config(state='disabled')
-    radio_btn9600.config(state='disabled')
-    radio_btn115200.config(state='disabled')
-    comport_cb.config(state='disabled')
-    chkAutoLoop.config(state='disabled')
-    chkAutoSpeed.config(state='disabled')
+    def _disable():
+        # btnCheckCom.config(state='disabled') # Её блочим отдельно только при вызове кнопки Сброс
+        btnSbros.config(state='disabled')
+        btnPrintRemont.config(state='disabled')
+        btnPrintSpisanie.config(state='disabled')
+        btnPrintStickData.config(state='disabled')
+        btnPrintStickAuto.config(state='disabled')
+        btnPrintMikrotik.config(state='disabled')
+        enabled_checkbutton.config(state='disabled')
+        config_checkbutton.config(state='disabled')
+        radio_btn9600.config(state='disabled')
+        radio_btn115200.config(state='disabled')
+        comport_cb.config(state='disabled')
+        chkAutoLoop.config(state='disabled')
+        chkAutoSpeed.config(state='disabled')
+    _run_on_main_thread(_disable)
 
 def enable_buttons():
-    btnCheckCom.config(state='normal')
-    btnSbros.config(state='normal')
-    btnPrintRemont.config(state='normal')
-    btnPrintSpisanie.config(state='normal')
-    btnPrintStickData.config(state='normal')
-    btnPrintStickAuto.config(state='normal')
-    btnPrintMikrotik.config(state='normal')
-    enabled_checkbutton.config(state='normal')
-    config_checkbutton.config(state='normal')
-    radio_btn9600.config(state='normal')
-    radio_btn115200.config(state='normal')
-    comport_cb.config(state='normal')
-    chkAutoLoop.config(state='normal')
-    chkAutoSpeed.config(state='normal')
+    def _enable():
+        btnCheckCom.config(state='normal')
+        btnSbros.config(state='normal')
+        btnPrintRemont.config(state='normal')
+        btnPrintSpisanie.config(state='normal')
+        btnPrintStickData.config(state='normal')
+        btnPrintStickAuto.config(state='normal')
+        btnPrintMikrotik.config(state='normal')
+        enabled_checkbutton.config(state='normal')
+        config_checkbutton.config(state='normal')
+        radio_btn9600.config(state='normal')
+        radio_btn115200.config(state='normal')
+        comport_cb.config(state='normal')
+        chkAutoLoop.config(state='normal')
+        chkAutoSpeed.config(state='normal')
+    _run_on_main_thread(_enable)
 
 def countdown(seconds): #Обновляет прогресс-бар и текст отсчёта внутри него.
     global countdown_active
     if seconds > 0 and countdown_active:  # Проверка, активен ли отсчёт
-        progressbar_label.config(text=f"Ожидается перезагрузка устройства... {seconds} сек.")
+        update_progressbar_label(f"Ожидается перезагрузка устройства... {seconds} сек.")
         # Дублируем в окно отладки
         print_log(f"---- Ожидается перезагрузка устройства... {seconds} сек.", update=True, visible=False)
         if seconds % 2 == 0:
-            progressbar.step(1)
+            _run_on_main_thread(lambda: progressbar.step(1))
         else:
-           progressbar.step(-1)
+           _run_on_main_thread(lambda: progressbar.step(-1))
         if seconds > 0:  # Продолжаем отсчёт, если время не истекло
-            root.after(1000, countdown, seconds - 1)
+            _run_on_main_thread(lambda: root.after(1000, countdown, seconds - 1))
     else:
         countdown_active = False  # Останавливаем отсчёт
         # Не очищаем текст — его устанавливает вызвавшая сторона
 
 def print_log(message, update=False, color=None, visible=True): #Вывод сообщения в лог с возможностью обновления
     def _do_log():
-        if update:
-            # Удаляем последнее сообщение, если оно было обновляемым
-            stOutput.delete("end-2l", "end-1c")
-
-        start_pos = stOutput.index("end-1c")
-
         if visible:
-            stOutput.insert(END, message + "\n")
+            clean_msg = message.replace("---- ", "").replace("\n", "").strip()
+            fg_color = "#2C3E50"
+            if color == "green": fg_color = "#27ae60"
+            elif color == "red": fg_color = "#e74c3c"
+            elif color == "orange": fg_color = "#d35400"
+            elif color == "blue": fg_color = "#2980b9"
+            try:
+                update_progressbar_label(clean_msg, fg_color)
+            except NameError:
+                pass
 
-            # Если указан цвет - применяет его
-            if color:
-                stOutput.tag_add("temp_color", start_pos, "end-1c")
-                stOutput.tag_config("temp_color", foreground=color)
-
-            stOutput.yview(END)
 
         # Дублируем это же процедурное сообщение в окно отладки (если оно уже создано)
         try:
@@ -2686,8 +2691,7 @@ def print_log(message, update=False, color=None, visible=True): #Вывод со
 
 def clear_text():   #очистка поля вывода при нажатии кнопки
     def _do_clear():
-        stOutput.delete("1.0", END)
-        progressbar_label.config(text="", foreground="black")
+        update_progressbar_label("", "black")
         # debugOutput больше не очищается — данные сохраняются между циклами
     _run_on_main_thread(_do_clear)
 
@@ -2839,8 +2843,7 @@ class ToolTip:
 root =  Tk() #окно приложения
 sv_ttk.set_theme("light")
 root.title('Сброс и печать наклеек v1.08043')
-root.geometry("750x760+400+200")
-root.minsize(750, 760) # Слегка увеличили окно для более просторных отступов
+root.minsize(750, 450) # Слегка увеличили окно для более просторных отступов
 
 # --- НАЧАЛО БЛОКА ВИЗУАЛЬНОГО ОФОРМЛЕНИЯ ---
 style = ttk.Style()
@@ -2927,13 +2930,12 @@ var_auto_speed = tk.BooleanVar(value=auto_speed_value)
 
 # --- Основной контейнер и панель отладки рядом (справа, скрыта по умолчанию) ---
 # Фиксированная ширина 600px — без отладки, с отладкой 1300px
-MAIN_WIDTH = 750
+MAIN_WIDTH = 800
 DEBUG_DEFAULT_WIDTH = 700  # ширина окна отладки по умолчанию
-WINDOW_Y = 860
+WINDOW_Y = 700
 
 left_container = ttk.Frame(root, width=MAIN_WIDTH)
 left_container.pack(side=LEFT, fill=Y, expand=False)
-left_container.pack_propagate(False)  # Запрещаем сжиматься
 
 frame_debug = ttk.Frame(root, padding=[5, 5, 5, 5], width=DEBUG_DEFAULT_WIDTH)  # Панель отладки — появляется справа
 frame_debug.pack_propagate(False)
@@ -3033,8 +3035,6 @@ ttk.Entry(frame_mikrotik, textvariable=mkt_pass_var, show="*", width=14).grid(ro
 btnPrintMikrotik = ttk.Button(frame_mikrotik, text="Печать наклейки Mikrotik", command=click_btnPrintMikrotik)
 btnPrintMikrotik.grid(row=1, column=0, columnspan=6, sticky='ew', padx=2, pady=2)
 
-frame5 = ttk.Frame(left_container, padding=[5, 2, 5, 2])
-frame5.pack(anchor=W, fill=BOTH, expand=True, padx=10, pady=(2, 5))
 
 #при нажатии любой кнопки вызываем функцию проверки
 root.bind('<KeyPress>', on_keypress)
@@ -3108,8 +3108,8 @@ progress = IntVar(value=0) # прогрессбар
 progressbar =  ttk.Progressbar(frame2, orient="horizontal", variable=progress)
 progressbar.grid(sticky="ew", row=4, column=0, columnspan=4, padx=2, pady=2)
 # Текст отсчёта поверх прогресс-бара
-progressbar_label = ttk.Label(frame2, text="", font=('Segoe UI', 9))
-progressbar_label.grid(row=5, column=0, columnspan=4, pady=(0, 5))
+progressbar_label = ttk.Label(frame2, text="", font=('Segoe UI', 11, 'bold'))
+progressbar_label.grid(row=5, column=0, columnspan=4, pady=(5, 10))
 
 btnPrintStickAuto = ttk.Button(frame3, text="Печать QR подключенного коммутатора", command=click_btnPrintStickAuto)
 btnPrintStickAuto.grid(sticky=NW, row=1, column=1, columnspan=3, padx=2, pady=2)
@@ -3164,10 +3164,6 @@ btnPrintSpisanie = ttk.Button(frame4, text="X. Наклейка Списание
 btnPrintSpisanie.grid(sticky=EW, row=3, column=3, columnspan=1, padx=5, pady=(5,2))
 
 # Основной лог — светлый, "не терминальный" фон: просто показывает, какая процедура сейчас идёт
-stOutput = ScrolledText(frame5, width=10,  height=40, font=('Segoe UI', 10),
-                        bg='#EAF3FB', fg=TEXT_COLOR, insertbackground=TEXT_COLOR,
-                        relief='flat', borderwidth=0, padx=10, pady=2)
-stOutput.pack(fill=BOTH, side=LEFT, expand=True)
 
 # --- Панель отладки (справа, появляется по кнопке "Отладка >>") ---
 debug_header = ttk.Label(frame_debug, text="Отладка: сырой обмен с COM-портом", font=('Segoe UI', 10, 'bold'))
