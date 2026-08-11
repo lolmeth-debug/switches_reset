@@ -79,10 +79,6 @@ def safe_progress_set(value):
     """Потокобезопасная установка значения progressbar."""
     _run_on_main_thread(lambda: progress.set(value))
 
-def update_progressbar_label(text, foreground="black"):
-    """Потокобезопасная установка текста метки progressbar_label."""
-    _run_on_main_thread(lambda: progressbar_label.config(text=text, foreground=foreground))
-
 debug_raw_queue = queue.Queue()  # 'Сырые' данные для окна отладки: (kind, text), kind в {'output','input'}
 
 def _timestamp():
@@ -2843,6 +2839,7 @@ class ToolTip:
 root =  Tk() #окно приложения
 sv_ttk.set_theme("light")
 root.title('Сброс и печать наклеек v1.08043')
+root.geometry("750x500+400+200")
 root.minsize(750, 450) # Слегка увеличили окно для более просторных отступов
 
 # --- НАЧАЛО БЛОКА ВИЗУАЛЬНОГО ОФОРМЛЕНИЯ ---
@@ -2932,10 +2929,11 @@ var_auto_speed = tk.BooleanVar(value=auto_speed_value)
 # Фиксированная ширина 600px — без отладки, с отладкой 1300px
 MAIN_WIDTH = 800
 DEBUG_DEFAULT_WIDTH = 700  # ширина окна отладки по умолчанию
-WINDOW_Y = 700
+WINDOW_Y = 650
 
 left_container = ttk.Frame(root, width=MAIN_WIDTH)
 left_container.pack(side=LEFT, fill=Y, expand=False)
+  # Запрещаем сжиматься
 
 frame_debug = ttk.Frame(root, padding=[5, 5, 5, 5], width=DEBUG_DEFAULT_WIDTH)  # Панель отладки — появляется справа
 frame_debug.pack_propagate(False)
