@@ -2835,7 +2835,7 @@ class ToolTip:
 root =  Tk() #окно приложения
 sv_ttk.set_theme("light")
 root.title('Сброс и печать наклеек v1.08043')
-root.geometry("750x450+400+200")
+root.geometry("750x500+400+200")
 root.minsize(750, 450) # Слегка увеличили окно для более просторных отступов
 
 # --- НАЧАЛО БЛОКА ВИЗУАЛЬНОГО ОФОРМЛЕНИЯ ---
@@ -2925,7 +2925,7 @@ var_auto_speed = tk.BooleanVar(value=auto_speed_value)
 # Фиксированная ширина 600px — без отладки, с отладкой 1300px
 MAIN_WIDTH = 750
 DEBUG_DEFAULT_WIDTH = 700  # ширина окна отладки по умолчанию
-WINDOW_Y = 450
+WINDOW_Y = 500
 
 left_container = ttk.Frame(root, width=MAIN_WIDTH)
 left_container.pack(side=LEFT, fill=Y, expand=False)
@@ -3102,8 +3102,8 @@ progress = IntVar(value=0) # прогрессбар
 progressbar =  ttk.Progressbar(frame2, orient="horizontal", variable=progress)
 progressbar.grid(sticky="ew", row=4, column=0, columnspan=4, padx=2, pady=2)
 # Текст отсчёта поверх прогресс-бара
-progressbar_label = ttk.Label(frame2, text="", font=('Segoe UI', 9)) 
-progressbar_label.grid(row=5, column=0, columnspan=4, pady=(0, 5))
+progressbar_label = ttk.Label(frame2, text="", font=('Segoe UI', 11, 'bold')) 
+progressbar_label.grid(row=5, column=0, columnspan=4, pady=(5, 10))
 
 btnPrintStickAuto = ttk.Button(frame3, text="Печать QR подключенного коммутатора", command=click_btnPrintStickAuto)
 btnPrintStickAuto.grid(sticky=NW, row=1, column=1, columnspan=3, padx=2, pady=2)
